@@ -1,1 +1,4 @@
-# BalinarioPhonebookApp
+The Flutter app have a few functionalities
+the first is that once you run the app, the first screeen shows a texttfield for the Firstname, Lastname, and for the phone numbers, it also has a button for incrementing or decrementing the number of textfield for the contact numbers then another button can be seen for creating the contact which will be stored in the database as well as saving locally, The the buttom at the lower left is for viewing the contacts on the second route/screen.
+
+On the second screen, if you click on of the contacts, you can have an option to edit or delete a specific contact and this was made possible through the CRUD method, specifically the .put and .delete function.
