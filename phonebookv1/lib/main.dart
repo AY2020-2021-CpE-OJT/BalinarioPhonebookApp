@@ -9,6 +9,7 @@ void main() => runApp(MyApp()); //responsible for running the app
 class Todo {
   final String firstName;
   final String lastName;
+  //final String contactNumbers;
   final List<dynamic> contactNumbers;
 
   Todo(this.firstName, this.lastName, this.contactNumbers);
@@ -100,7 +101,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     controller: contactNumberControllers[index],
                     decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'Enter Phone Number',
+                        labelText: 'Enter Phone Number',
                         prefixIcon: Icon(
                           Icons.art_track_rounded,
                           size: 30,
@@ -255,8 +256,8 @@ class DisplayContacts extends StatefulWidget {
 //Display Data from database
 class _DisplayContactsState extends State<DisplayContacts> {
   List<Future<Album>> contactsFromDatabase = <Future<Album>>[];
-  //late List<Future<Album>> contactsFromDB;
   late int numberOfDocuments = 0;
+
 
   getNumberOfDocuments() async {
     final request =
@@ -305,7 +306,7 @@ class _DisplayContactsState extends State<DisplayContacts> {
                                                 builder: (context) =>
                                                     UpdateScreen(id: snapshot
                                                         .data!.id.toString())));
-                                      }, child: Text('Edit'))),
+                                      }, child: Text('Update'))),
                               FutureBuilder<Album>(
                                   future: contactsFromDatabase[index],
                                   builder: (context, snapshot) =>
@@ -325,7 +326,11 @@ class _DisplayContactsState extends State<DisplayContacts> {
                                                 }
                                               });
                                             });
-                                           // Navigator.pop(context: 'Delete');
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MyCustomForm()));
                                           },
                                           child: Text('Delete')))
                             ],
@@ -354,7 +359,7 @@ class _DisplayContactsState extends State<DisplayContacts> {
                     return Text ("${snapshot.error}");
                   }
                   return Center(
-                     // child: CircularProgressIndicator()
+                    // child: CircularProgressIndicator()
                   );
                 },
               ),
@@ -380,16 +385,7 @@ class Album {
         phoneNumbers: json['phone_numbers']);
   }
 }
-loginPhonebook() async {
-  final response = await http.post(Uri.parse('$herokulink/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<dynamic, dynamic>{
-        'email': 'john316@gmail.com',
-        'password': 'divineIntervention'
-      }));
-}
+
 //
 // post to database
 //
@@ -422,7 +418,7 @@ createContactsToBeSecured(String lastName, String firstName,
 //
 //Delete recipe
 //
- deleteContactsToBeSecured(String _id) async {
+deleteContactsToBeSecured(String _id) async {
   final response = await http.post(
       Uri.parse('$herokulink/login'),
       // Send authorization headers to the backend.
@@ -437,19 +433,10 @@ createContactsToBeSecured(String lastName, String firstName,
   final String token = jsonDecode(response.body)['token'];
   final res= await http.delete(Uri.parse('$herokulink/user/data/$_id'),
     headers:{
-     HttpHeaders.authorizationHeader: 'Bearer $token'
+      HttpHeaders.authorizationHeader: 'Bearer $token'
     },
   );
   print(jsonDecode(res.body));
-  // if (response.statusCode == 200) {
-  //   // If the server did return a 200 OK response,
-  //   // then parse the JSON.
-  //   return Album.fromJson(jsonDecode(response.body));
-  // } else {
-  //   // If the server did not return a 200 OK response,
-  //   // then throw an exception.
-  //   throw Exception('Failed to update album.');
-  // }
 }
 //
 // Update function
@@ -458,11 +445,11 @@ Future<Album> updateDataToBeSecured(String lastName, String firstName,
     List<dynamic> phoneNumbers, String _id) async {
   //put final
   final response = await http.post(
-    Uri.parse('$herokulink/login'),
-    // Send authorization headers to the backend.
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
+      Uri.parse('$herokulink/login'),
+      // Send authorization headers to the backend.
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
       body: jsonEncode(<dynamic, dynamic>{
         'email': 'john316@gmail.com',
         'password': 'divineIntervention',
@@ -613,9 +600,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ContactRoute(
-                                  contactsTodo: todoContacts,
-                                )));
+                                ContactRoute(contactsTodo: todoContacts)));
                   },
                   child: Text('Update')),
             ),
@@ -630,6 +615,3 @@ class _UpdateScreenState extends State<UpdateScreen> {
     );
   }
 }
-
-
-
